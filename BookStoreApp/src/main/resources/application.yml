@@ -1,0 +1,75 @@
+spring:
+  application:
+    name: ECommApp
+  datasource:
+    url: jdbc:mysql://localhost:3306/booksdb?useSSL=false
+    username: root
+    password: 12345678
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+    hibernate:
+      ddl-auto: none
+      show-sql: true
+      properties:
+        hibernate:
+          format_sql: true
+  data:
+    elasticsearch:
+      cluster-name: docker-cluster
+      cluster-nodes: localhost:9200
+
+      repositories:
+        enabled: true
+      rest:
+        uris: https://localhost:9200
+  profiles:
+    include:
+      - mail
+  messages:
+    basename: messages
+    encoding: UTF-8
+    cache-duration: -1
+    fallback-to-system-locale: true
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 100MB
+      max-request-size: 100MB
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    mode: HTML
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operationsSorter: alpha
+    tagsSorter: alpha
+
+server:
+  port: 8090
+  error:
+    include-stacktrace: never
+    include-binding-errors: always
+    include-message: always
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always
+#logging:
+#  file: /logs/server.log
+#  level:
+#    com:
+#      javahunter:
+#        application: DEBUG
+
+
+

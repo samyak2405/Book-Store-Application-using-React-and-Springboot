@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>OTP for Registration</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .email-container {
+            width: 100%;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 5px;
+            box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
+            margin: 20px auto;
+        }
+        .email-header {
+            background-color: #007bff;
+            color: #ffffff;
+            padding: 10px;
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+        }
+        .email-content {
+            padding: 20px;
+        }
+        .otp-code {
+            font-size: 20px;
+            color: #007bff;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<div class="email-container">
+    <div class="email-header">
+        <h2>OTP for Registration</h2>
+    </div>
+    <div class="email-content">
+        <p>Dear <span th:text="${userName}">User</span>,</p>
+        <p>Thank you for registering with <strong th:text="${applicationName}">Our Application</strong>. To complete your registration, please use the following One-Time Password (OTP):</p>
+        <p class="otp-code" th:text="${otp}">123456</p>
+        <p>Please enter this OTP on the registration page to verify your email address and complete the registration process.</p>
+        <p>If you did not initiate this registration, please ignore this email or contact our support team immediately.</p>
+        <p>Thank you,<br/>The <span th:text="${applicationName}">Application Name</span> Team</p>
+    </div>
+</div>
+</body>
+</html>
