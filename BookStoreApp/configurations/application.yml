@@ -15,18 +15,22 @@ spring:
       properties:
         hibernate:
           format_sql: true
-  data:
-    elasticsearch:
-      cluster-name: docker-cluster
-      cluster-nodes: localhost:9200
-
-      repositories:
-        enabled: true
-      rest:
-        uris: https://localhost:9200
-  profiles:
-    include:
-      - mail
+#  profiles:
+#    include:
+#      - mail
+  mail:
+    default-encoding: UTF-8
+    host: smtp.gmail.com
+    port: 587
+    username: ecommstore98@gmail.com
+    password: gygwkyoxctlkixrs
+    protocol: smtp
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
   messages:
     basename: messages
     encoding: UTF-8
@@ -41,6 +45,18 @@ spring:
     prefix: classpath:/templates/
     suffix: .html
     mode: HTML
+  kafka:
+    producer:
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+    bootstrap-servers: localhost:9092
+  cache:
+    type: redis
+  redis:
+    host: localhost
+    port: 6379
+
+
 springdoc:
   api-docs:
     path: /v3/api-docs
@@ -64,12 +80,6 @@ management:
   endpoint:
     health:
       show-details: always
-#logging:
-#  file: /logs/server.log
-#  level:
-#    com:
-#      javahunter:
-#        application: DEBUG
 
 
 

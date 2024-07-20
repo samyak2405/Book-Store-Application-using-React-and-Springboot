@@ -39,11 +39,6 @@ public class UserMapper {
         user.setUserName(userDto.getUserName());
         user.setPassword(userDto.getPassword());
         user.setEnabled(userDto.getEnabled());
-
-        // Do not set role here, it will be set in the service method
-        // user.setRole(userDto.getRole());
-
-        // Set addresses if necessary
         Set<Address> addresses = userDto.getAddresses().stream()
                 .map(addressDto -> {
                     Address address = new Address();

@@ -161,7 +161,7 @@ public class AuthController {
                     .success(true)
                     .build(), HttpStatus.OK);
         return new ResponseEntity<>(ApiResponses.builder()
-                .message(apiMessages.getMessage("Something went wrong while resetting password, please try again"))
+                .message(apiMessages.getMessage("error.auth.reset-password"))
                 .success(false)
                 .build(), HttpStatus.BAD_REQUEST);
     }

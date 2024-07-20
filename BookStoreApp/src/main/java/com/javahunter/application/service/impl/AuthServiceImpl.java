@@ -4,15 +4,18 @@ import com.javahunter.application.config.ApiMessages;
 import com.javahunter.application.dto.*;
 import com.javahunter.application.entity.Role;
 import com.javahunter.application.entity.User;
+import com.javahunter.application.exception.impl.UserAlreadyExistsException;
 import com.javahunter.application.exception.impl.UserNotEnabledException;
 import com.javahunter.application.repository.RoleRepository;
 import com.javahunter.application.repository.UserRepository;
 import com.javahunter.application.service.*;
+import com.javahunter.application.util.RoleMapper;
 import com.javahunter.application.util.UserMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -40,6 +43,8 @@ public class AuthServiceImpl implements AuthService {
     private final OtpService otpService;
     private final EmailService emailService;
     private final TemporaryUserService temporaryUserService;
+    private final KafkaTemplate<String, Object> kafkaTemplate;
+
     @Override
     public AuthResponse authenticateUser(AuthRequest authRequest) {
         log.info("Inside Authenticate User Service Method");
@@ -64,10 +69,10 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public void registerUser(UserDto userDto) throws RoleNotFoundException {
         log.info("Inside Sign up request");
-        Role role = roleRepository.findByName(userDto.getRole().getName());
-        if(role==null){
-
+        if(userRepository.existsByEmail(userDto.getEmail()) || userRepository.existsByPhoneNumber(userDto.getPhoneNumber())){
+            throw new UserAlreadyExistsException(apiMessages.getMessage("error.user.already.exists"));
         }
+        //TODO: Add user request validation
         String otp = otpService.generateOtp(userDto.getEmail());
         emailService.sendOtpEmail(userDto.getEmail(), userDto.getEmail().split("@")[0], otp, "Book Store Application");
         temporaryUserService.storeTemporaryUser(userDto, otp);
@@ -78,14 +83,17 @@ public class AuthServiceImpl implements AuthService {
         userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
         User user = UserMapper.toEntity(userDto);
         user.setEnabled(true);
+        Role role = roleRepository.findByName(userDto.getRole().getName());
+        user.setRole(role);
         userRepository.save(user);
+        kafkaTemplate.send("user-registration",userDto);
     }
 
     @Override
     public AuthResponse refreshToken(String token) {
         log.info("Inside request token");
         String userName = jwtService.extractUserName(token);
-        User user = userRepository.findByUserName(userName).orElseThrow(()->new UsernameNotFoundException("User not found"));
+        User user = userRepository.findByUserName(userName).orElseThrow(()->new UsernameNotFoundException(String.format(apiMessages.getMessage("error.user.not-found"), userName)));
         if(jwtService.isTokenValid(token,user)){
             var jwt = jwtService.generateToken(user);
             return AuthResponse.builder()
@@ -100,7 +108,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public boolean resetPassword(ResetPasswordRequest passwordRequest) {
         User user = userRepository.findByUserName(passwordRequest.getUserName())
-                .orElseThrow(() -> new UsernameNotFoundException(String.format("User with username %s not found", passwordRequest.getUserName())));
+                .orElseThrow(() -> new UsernameNotFoundException(String.format(apiMessages.getMessage("error.user.not-found"), passwordRequest.getUserName())));
 
         if (!passwordRequest.getNewPassword().equals(passwordRequest.getConfirmNewPassword())) {
             log.info("New Password and confirm new password are not the same");

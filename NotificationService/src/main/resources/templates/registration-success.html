@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Registration Successful</title>
+  <style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 0;
+    }
+    .container {
+        max-width: 600px;
+        margin: 50px auto;
+        background-color: #ffffff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .header {
+        text-align: center;
+        padding-bottom: 20px;
+        border-bottom: 1px solid #e4e4e4;
+    }
+    .header img {
+        max-width: 100px;
+        margin-bottom: 10px;
+    }
+    .header h1 {
+        margin: 0;
+        font-size: 24px;
+        color: #333333;
+    }
+    .content {
+        padding: 20px 0;
+        color: #555555;
+        line-height: 1.6;
+    }
+    .content h2 {
+        color: #333333;
+        font-size: 20px;
+    }
+    .content p {
+        margin: 10px 0;
+    }
+    .footer {
+        text-align: center;
+        padding: 20px;
+        border-top: 1px solid #e4e4e4;
+        color: #888888;
+        font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <img src="https://via.placeholder.com/100" alt="Logo">
+    <h1>Welcome to [[${applicationName}]]</h1>
+  </div>
+  <div class="content">
+    <h2>Hi, [[${firstName}]] [[${lastName}]]!</h2>
+    <p>Thank you for registering with us. Your account has been created successfully.</p>
+    <p><strong>Account Details:</strong></p>
+    <ul>
+      <li><strong>Username:</strong> [[${userName}]]</li>
+      <li><strong>Email:</strong> [[${email}]]</li>
+      <li><strong>Phone Number:</strong> [[${phoneNumber}]]</li>
+      <li><strong>Role:</strong> [[${role}]]</li>
+    </ul>
+    <p>You can now log in to your account using your username and password.</p>
+    <p>If you have any questions or need further assistance, feel free to contact our support team.</p>
+  </div>
+  <div class="footer">
+    <p>&copy; 2024 [[${applicationName}]]. All rights reserved.</p>
+    <p>[Your Company Address]</p>
+  </div>
+</div>
+</body>
+</html>

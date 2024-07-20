@@ -3,6 +3,7 @@ package com.javahunter.application.exception;
 import com.javahunter.application.config.ApiMessages;
 import com.javahunter.application.dto.ApiResponses;
 import com.javahunter.application.exception.impl.ResourceNotFoundException;
+import com.javahunter.application.exception.impl.UserAlreadyExistsException;
 import com.javahunter.application.exception.impl.UserNotEnabledException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -43,6 +44,14 @@ public class GlobalExceptionHandler {
         apiResponse.setSuccess(false);
         return new ResponseEntity<>(apiResponse, HttpStatus.UNAUTHORIZED);
     }
+
+    @ExceptionHandler(UserAlreadyExistsException.class)
+    public ResponseEntity<?> handleUserAlreadyExistsException(UserAlreadyExistsException ex) {
+        apiResponse.setMessage(ex.getMessage());
+        apiResponse.setSuccess(false);
+        return new ResponseEntity<>(apiResponse, HttpStatus.UNAUTHORIZED);
+    }
+
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<?> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
         apiResponse.setMessage(ex.getMessage());
